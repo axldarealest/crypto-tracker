@@ -2,30 +2,21 @@
 
 import Link from "next/link";
 import { Wallet, Mail, Lock } from "lucide-react";
-import { signIn, SessionProvider, useSession } from "next-auth/react";
+import { signIn, SessionProvider } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { useAuthRedirect } from "@/hooks/useAuth";
 
 function SignInForm() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const { data: session, status } = useSession();
-
-  useEffect(() => {
-    console.log("🔵 SignInPage component mounted");
-    console.log("🔵 signIn function available:", typeof signIn);
-    
-    // Rediriger si déjà connecté
-    if (session) {
-      router.push("/dashboard");
-    }
-  }, [session, router]);
+  
+  // Redirect if already authenticated
+  useAuthRedirect("/dashboard");
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log("🟡 Form submitted!");
-    
     setError(null);
     setLoading(true);
 
@@ -33,27 +24,19 @@ function SignInForm() {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
 
-    console.log("🟡 Form data:", { email, password });
-
     try {
-      console.log("🟡 Calling signIn...");
       const result = await signIn("credentials", {
         redirect: false,
         email,
         password,
       });
 
-      console.log("🟡 signIn result:", result);
-
       if (result?.error) {
-        console.log("🔴 Error:", result.error);
         setError("Email ou mot de passe incorrect.");
       } else if (result?.ok) {
-        console.log("🟢 Success! Redirecting...");
         router.push("/dashboard");
       }
-    } catch (e) {
-      console.log("🔴 Exception:", e);
+    } catch {
       setError("Une erreur est survenue lors de la connexion.");
     } finally {
       setLoading(false);
@@ -81,11 +64,9 @@ function SignInForm() {
               {error}
             </div>
           )}
+          
           <div>
-            <label
-              htmlFor="email"
-              className="mb-2 block text-sm font-medium text-gray-300"
-            >
+            <label htmlFor="email" className="mb-2 block text-sm font-medium text-gray-300">
               Email
             </label>
             <div className="relative">
@@ -102,10 +83,7 @@ function SignInForm() {
           </div>
 
           <div>
-            <label
-              htmlFor="password"
-              className="mb-2 block text-sm font-medium text-gray-300"
-            >
+            <label htmlFor="password" className="mb-2 block text-sm font-medium text-gray-300">
               Mot de passe
             </label>
             <div className="relative">

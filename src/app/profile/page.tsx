@@ -1,24 +1,24 @@
 "use client";
 
-import { useSession } from "next-auth/react";
 import { User, Mail, Settings, ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import Toggle from "@/components/Toggle";
 
 export default function ProfilePage() {
-  const { data: session, status } = useSession();
+  const { session, isLoading } = useAuth("/signin");
 
-  if (status === "loading") {
-    return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="text-white">Chargement...</div>
-      </div>
-    );
+  if (isLoading) {
+    return <LoadingSpinner />;
   }
 
-  if (!session) {
-    redirect("/signin");
-  }
+  if (!session) return null;
+
+  const handleToggleChange = (setting: string) => (checked: boolean) => {
+    console.log(`${setting} changed to:`, checked);
+    // TODO: Implement settings save logic
+  };
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
@@ -78,29 +78,21 @@ export default function ProfilePage() {
             </div>
 
             <div className="space-y-4">
-              <div className="flex items-center justify-between rounded-md bg-gray-700 p-3">
-                <span className="text-sm">Notifications email</span>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input type="checkbox" className="sr-only peer" defaultChecked />
-                  <div className="relative w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
-                </label>
-              </div>
-
-              <div className="flex items-center justify-between rounded-md bg-gray-700 p-3">
-                <span className="text-sm">Alertes de prix</span>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input type="checkbox" className="sr-only peer" defaultChecked />
-                  <div className="relative w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
-                </label>
-              </div>
-
-              <div className="flex items-center justify-between rounded-md bg-gray-700 p-3">
-                <span className="text-sm">Mode sombre</span>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input type="checkbox" className="sr-only peer" defaultChecked />
-                  <div className="relative w-11 h-6 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
-                </label>
-              </div>
+              <Toggle 
+                label="Notifications email" 
+                defaultChecked={true}
+                onChange={handleToggleChange("email_notifications")}
+              />
+              <Toggle 
+                label="Alertes de prix" 
+                defaultChecked={true}
+                onChange={handleToggleChange("price_alerts")}
+              />
+              <Toggle 
+                label="Mode sombre" 
+                defaultChecked={true}
+                onChange={handleToggleChange("dark_mode")}
+              />
             </div>
 
             <button className="mt-6 w-full rounded-lg bg-green-600 px-4 py-2 text-center font-medium text-white hover:bg-green-700 transition-colors">
