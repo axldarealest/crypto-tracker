@@ -2,11 +2,17 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 export function middleware(request: NextRequest) {
-  // Allow public access to crypto APIs
+  // Always allow public access to crypto APIs
   if (request.nextUrl.pathname.startsWith('/api/ethereum') || 
       request.nextUrl.pathname.startsWith('/api/bitcoin') ||
       request.nextUrl.pathname.startsWith('/api/coingecko')) {
-    return NextResponse.next()
+    
+    // Add CORS headers for crypto APIs
+    const response = NextResponse.next()
+    response.headers.set('Access-Control-Allow-Origin', '*')
+    response.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+    response.headers.set('Access-Control-Allow-Headers', 'Content-Type')
+    return response
   }
 
   // For other routes, continue with normal processing

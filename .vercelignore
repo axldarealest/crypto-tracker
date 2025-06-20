@@ -1,0 +1,7 @@
+# Ignore development files
+.env.local
+.env.development
+tsconfig.tsbuildinfo
+
+# Ignore local database
+users.db 

@@ -1,5 +1,9 @@
 import { NextResponse } from 'next/server';
 
+// Disable Vercel's automatic authentication protection
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const from = searchParams.get('from');

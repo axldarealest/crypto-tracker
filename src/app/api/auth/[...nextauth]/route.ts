@@ -55,7 +55,8 @@ const authConfig = {
   pages: {
     signIn: '/signin',
     signOut: '/',
-  }
+  },
+  trustHost: true // Important pour Vercel
 }
 
 const { handlers, auth, signIn, signOut } = NextAuth(authConfig)
