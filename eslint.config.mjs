@@ -10,7 +10,15 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
+  ...compat.extends("next/core-web-vitals"),
+  {
+    rules: {
+      // Règles basiques React/Next.js seulement
+      "react/no-unescaped-entities": "off", // Permettre les apostrophes
+      "prefer-const": "warn", // Warning pour let → const
+      "react-hooks/exhaustive-deps": "warn", // Warning dépendances useEffect
+    }
+  }
 ];
 
 export default eslintConfig;

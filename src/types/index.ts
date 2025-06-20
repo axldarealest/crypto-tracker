@@ -36,6 +36,94 @@ export interface ChartDataPoint {
   value: number;
 }
 
+// Asset categories and types
+export type AssetCategory = 'crypto' | 'livrets' | 'actions' | 'comptes-bancaires' | 'metaux-precieux';
+
+export interface AssetBase {
+  id: string;
+  category: AssetCategory;
+  name: string;
+  value: number; // Value in EUR
+  lastUpdated: Date;
+  icon?: string;
+  performance?: {
+    change24h?: number;
+    changePercent24h?: number;
+  };
+}
+
+export interface CryptoAsset extends AssetBase {
+  category: 'crypto';
+  symbol: string; // BTC, ETH, etc.
+  address?: string;
+  amount: number; // Amount of crypto owned
+  currentPrice: number; // Current price per unit in EUR
+  addedManually: boolean;
+}
+
+export interface LivretAsset extends AssetBase {
+  category: 'livrets';
+  type: 'livret-a' | 'ldds' | 'pel' | 'cel' | 'livret-populaire' | 'livret-jeune' | 'autre';
+  interestRate: number; // Interest rate in percentage
+  bank?: string;
+}
+
+export interface ActionAsset extends AssetBase {
+  category: 'actions';
+  ticker: string; // Stock ticker symbol
+  quantity: number;
+  currentPrice: number;
+  market: string; // NYSE, NASDAQ, EURONEXT, etc.
+}
+
+export interface CompteBancaireAsset extends AssetBase {
+  category: 'comptes-bancaires';
+  type: 'compte-courant' | 'compte-epargne' | 'pel' | 'pea' | 'assurance-vie' | 'autre';
+  bank: string;
+  accountNumber?: string; // Masked for security
+}
+
+export interface MetauxPrecieuxAsset extends AssetBase {
+  category: 'metaux-precieux';
+  type: 'or' | 'argent' | 'platine' | 'palladium';
+  weight: number; // Weight in grams
+  purity?: number; // Purity percentage
+  currentPricePerGram: number;
+}
+
+export type Asset = CryptoAsset | LivretAsset | ActionAsset | CompteBancaireAsset | MetauxPrecieuxAsset;
+
+export interface Portfolio {
+  totalValue: number;
+  assets: Asset[];
+  breakdown: {
+    [K in AssetCategory]: {
+      totalValue: number;
+      count: number;
+      performance?: {
+        change24h: number;
+        changePercent24h: number;
+      };
+    };
+  };
+}
+
+// Modal and UI types
+export interface AddAssetModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onAssetAdded: (asset: Asset) => void;
+  onCategorySelect?: (category: AssetCategory) => void;
+}
+
+export interface AssetCategoryCardProps {
+  category: AssetCategory;
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  onClick: () => void;
+}
+
 // Component props types
 export interface LoadingSpinnerProps {
   message?: string;

@@ -12,7 +12,7 @@ export async function GET(request: Request) {
 
   // Use different URL based on whether API key is available
   let coingeckoUrl: string;
-  let headers: Record<string, string> = {
+  const headers: Record<string, string> = {
     'Accept': 'application/json',
   };
 

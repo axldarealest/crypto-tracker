@@ -18,8 +18,8 @@ const authConfig = {
 
         try {
           const user = await verifyUser({
-            email: credentials.email,
-            password: credentials.password
+            email: credentials.email as string,
+            password: credentials.password as string
           });
 
           if (user) {
