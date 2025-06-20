@@ -1,48 +1,91 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { Wallet } from "lucide-react";
-import { useSession } from "next-auth/react";
+import { usePathname } from 'next/navigation';
+import { Menu, X } from "lucide-react";
 import UserDropdown from "./UserDropdown";
+import { Logo } from "./Logo";
 
-export default function GlobalHeader() {
-  const { data: session } = useSession();
+const navLinks = [
+  { href: '/dashboard', label: 'Dashboard' },
+  { href: '/portfolio', label: 'Portfolio' },
+  { href: '/marches', label: 'Marchés' },
+];
 
-  if (!session) {
-    return null;
-  }
+export function GlobalHeader() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const pathname = usePathname();
+
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  const closeMenu = () => setIsMenuOpen(false);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-gray-900/80 backdrop-blur-sm border-b border-gray-800">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        <Link href="/dashboard" className="flex items-center gap-2">
-          <Wallet className="h-6 w-6 text-green-400" />
-          <span className="text-xl font-bold text-white">TrackFi</span>
-        </Link>
-        
-        <nav className="flex items-center gap-6">
-          <Link 
-            href="/dashboard" 
-            className="text-sm text-gray-300 hover:text-white transition-colors"
-          >
-            Dashboard
+    <header className="sticky top-0 z-50 w-full border-b border-dashed border-[var(--foreground)]/20 bg-[var(--background)]/80 backdrop-blur-sm">
+      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+        {/* Logo & Main Nav */}
+        <div className="flex items-center gap-6">
+          <Link href="/dashboard" onClick={closeMenu}>
+            <Logo size="sm" />
           </Link>
-          <Link 
-            href="/portfolio" 
-            className="text-sm text-gray-300 hover:text-white transition-colors"
-          >
-            Portfolio
-          </Link>
-          <Link 
-            href="/markets" 
-            className="text-sm text-gray-300 hover:text-white transition-colors"
-          >
-            Marchés
-          </Link>
-        </nav>
+          <nav className="hidden md:flex items-center gap-4">
+            {navLinks.map(({ href, label }) => (
+              <Link
+                key={href}
+                href={href}
+                className={`px-3 py-2 text-sm font-semibold rounded-lg transition-colors ${
+                  pathname === href
+                    ? 'text-[var(--accent)] bg-[var(--accent)]/10'
+                    : 'text-[var(--foreground)]/70 hover:text-[var(--foreground)] hover:bg-white/10'
+                }`}
+              >
+                {label}
+              </Link>
+            ))}
+          </nav>
+        </div>
 
-        <UserDropdown />
+        {/* User Menu & Hamburger */}
+        <div className="flex items-center gap-4">
+          <div className="hidden md:block">
+            <UserDropdown />
+          </div>
+          <button
+            onClick={toggleMenu}
+            className="md:hidden p-2 text-[var(--foreground)] hover:bg-white/20 rounded-lg transition-colors"
+            aria-label="Menu"
+          >
+            {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
+        </div>
       </div>
+
+      {/* Mobile Menu */}
+      {isMenuOpen && (
+        <div className="md:hidden border-t border-dashed border-[var(--foreground)]/20 bg-[var(--background)]/95 backdrop-blur-sm">
+          <div className="container mx-auto px-4 py-4">
+            <nav className="flex flex-col gap-2 mb-4">
+              {navLinks.map(({ href, label }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  onClick={closeMenu}
+                  className={`px-3 py-3 text-base font-semibold rounded-lg transition-colors ${
+                    pathname === href
+                      ? 'text-[var(--accent)] bg-[var(--accent)]/10'
+                      : 'text-[var(--foreground)]/80 hover:text-[var(--foreground)] hover:bg-white/10'
+                  }`}
+                >
+                  {label}
+                </Link>
+              ))}
+            </nav>
+            <div className="pt-4 border-t border-dashed border-[var(--foreground)]/20">
+              <UserDropdown />
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 } 

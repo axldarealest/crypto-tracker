@@ -1,128 +1,116 @@
 "use client";
 
-import Link from "next/link";
-import { Wallet, Mail, Lock } from "lucide-react";
-import { signIn, SessionProvider } from "next-auth/react";
+import { useState, useEffect } from "react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
-import { useAuthRedirect } from "@/hooks/useAuth";
 
-function SignInForm() {
+export default function SignInPage() {
   const router = useRouter();
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  
+  const { data: session, status } = useSession();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+
   // Redirect if already authenticated
-  useAuthRedirect("/dashboard");
+  useEffect(() => {
+    if (status === "loading") return;
+    if (session) {
+      router.push("/dashboard");
+    }
+  }, [session, status, router]);
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setError(null);
-    setLoading(true);
-
-    const formData = new FormData(event.currentTarget);
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
 
     try {
       const result = await signIn("credentials", {
-        redirect: false,
         email,
         password,
+        redirect: false,
       });
 
       if (result?.error) {
-        setError("Email ou mot de passe incorrect.");
-      } else if (result?.ok) {
+        setError("Email ou mot de passe incorrect");
+      } else {
         router.push("/dashboard");
       }
-    } catch {
-      setError("Une erreur est survenue lors de la connexion.");
+    } catch (error) {
+      setError("Une erreur est survenue");
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gray-900 p-4">
-      <div className="w-full max-w-sm rounded-lg bg-gray-800/60 p-6 shadow-xl backdrop-blur-sm">
-        <div className="mb-6 text-center">
-          <div className="mb-4 flex justify-center">
-            <div className="rounded-lg bg-green-500/10 p-3">
-              <Wallet className="h-8 w-8 text-green-400" />
-            </div>
-          </div>
-          <h1 className="text-3xl font-bold text-white">TrackFi</h1>
-          <p className="text-gray-400">
-            Connectez-vous pour accéder à votre dashboard
-          </p>
+    <div className="flex min-h-screen flex-col items-center justify-center bg-[var(--background)] p-4 text-[var(--foreground)]">
+      <div className="w-full max-w-sm sm:max-w-md">
+        <div className="text-center">
+          <h1 className="text-3xl font-bold sm:text-4xl">YouFi</h1>
+          <p className="mt-2 text-[var(--foreground)]/70">Connectez-vous à votre compte</p>
         </div>
 
-        <form className="space-y-4" onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-[var(--foreground)]">
+              Email
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="mt-1 block w-full rounded-lg border border-dashed border-[var(--foreground)]/20 bg-white/20 px-3 py-2 text-[var(--foreground)] placeholder-[var(--foreground)]/50 backdrop-blur-sm focus:border-[var(--accent)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
+              placeholder="votre@email.com"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium text-[var(--foreground)]">
+              Mot de passe
+            </label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              autoComplete="current-password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="mt-1 block w-full rounded-lg border border-dashed border-[var(--foreground)]/20 bg-white/20 px-3 py-2 text-[var(--foreground)] placeholder-[var(--foreground)]/50 backdrop-blur-sm focus:border-[var(--accent)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
+              placeholder="••••••••"
+            />
+          </div>
+
           {error && (
-            <div className="rounded-md bg-red-500/20 p-3 text-center text-sm text-red-400">
+            <div className="rounded-lg bg-red-500/10 border border-dashed border-red-500/20 p-3 text-sm text-red-600">
               {error}
             </div>
           )}
-          
-          <div>
-            <label htmlFor="email" className="mb-2 block text-sm font-medium text-gray-300">
-              Email
-            </label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
-              <input
-                name="email"
-                type="email"
-                id="email"
-                placeholder="you@example.com"
-                required
-                className="block w-full rounded-md border-gray-600 bg-gray-700 p-2.5 pl-10 text-white placeholder-gray-400 focus:border-green-500 focus:ring-green-500"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label htmlFor="password" className="mb-2 block text-sm font-medium text-gray-300">
-              Mot de passe
-            </label>
-            <div className="relative">
-              <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
-              <input
-                name="password"
-                type="password"
-                id="password"
-                placeholder="••••••••"
-                required
-                className="block w-full rounded-md border-gray-600 bg-gray-700 p-2.5 pl-10 text-white placeholder-gray-400 focus:border-green-500 focus:ring-green-500"
-              />
-            </div>
-          </div>
 
           <button
             type="submit"
-            disabled={loading}
-            className="w-full rounded-lg bg-green-600 px-5 py-2.5 text-center font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-800 disabled:opacity-50"
+            disabled={isLoading}
+            className="group relative flex w-full justify-center rounded-lg bg-[var(--accent)] px-3 py-2 text-sm font-semibold text-white hover:bg-[var(--accent)]/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? "Connexion..." : "Se connecter"}
+            {isLoading ? "Connexion..." : "Se connecter"}
           </button>
         </form>
 
-        <p className="mt-6 text-center text-sm text-gray-400">
-          Vous n'avez pas de compte ?{" "}
-          <Link href="/signup" className="font-medium text-green-400 hover:underline">
-            S'inscrire
-          </Link>
-        </p>
+        <div className="mt-6 text-center">
+          <p className="text-sm text-[var(--foreground)]/70">
+            Pas encore de compte ?{" "}
+            <a href="/signup" className="font-semibold text-[var(--accent)] hover:text-[var(--accent)]/90">
+              S'inscrire
+            </a>
+          </p>
+        </div>
       </div>
     </div>
-  );
-}
-
-export default function SignInPage() {
-  return (
-    <SessionProvider>
-      <SignInForm />
-    </SessionProvider>
   );
 }

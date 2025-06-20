@@ -20,14 +20,16 @@ export function useAuth(redirectTo?: string) {
 }
 
 export function useAuthRedirect(redirectTo: string = "/dashboard") {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
 
   useEffect(() => {
+    if (status === "loading") return;
+    
     if (session) {
       router.push(redirectTo);
     }
-  }, [session, router, redirectTo]);
+  }, [session, status, router, redirectTo]);
 
-  return { session };
+  return { session, status, isLoading: status === "loading" };
 } 

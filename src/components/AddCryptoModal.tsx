@@ -23,14 +23,14 @@ const supportedCryptos: CryptoOption[] = [
     symbol: 'BTC',
     name: 'Bitcoin',
     icon: <Bitcoin className="w-8 h-8" />,
-    color: 'from-orange-400 to-yellow-500',
+    color: 'from-[var(--accent)] to-[#FF6B35]',
     addressFormat: 'bc1... ou 1... ou 3...'
   },
   {
     symbol: 'ETH',
     name: 'Ethereum',
     icon: <Coins className="w-8 h-8" />,
-    color: 'from-blue-400 to-purple-500',
+    color: 'from-[#4ECDC4] to-[#45B7D1]',
     addressFormat: '0x...'
   }
 ];
@@ -210,22 +210,22 @@ export default function AddCryptoModal({ isOpen, onClose, onAssetAdded }: AddCry
   };
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-gray-900 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
+    <div className="fixed inset-0 bg-[var(--foreground)]/20 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-[var(--background)] rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-hidden border border-dashed border-[var(--foreground)]/20 shadow-xl">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-700">
+        <div className="flex items-center justify-between p-6 border-b border-dashed border-[var(--foreground)]/20">
           <div className="flex items-center gap-3">
             {step !== 'method' && (
               <button
                 onClick={handleBack}
-                className="text-gray-400 hover:text-white transition-colors p-1"
+                className="text-[var(--foreground)]/60 hover:text-[var(--foreground)] transition-colors p-1"
               >
                 <ArrowLeft className="w-5 h-5" />
               </button>
             )}
             <div>
-              <h2 className="text-2xl font-bold text-white">Ajouter des cryptomonnaies</h2>
-              <p className="text-gray-400 mt-1">
+              <h2 className="text-2xl font-bold text-[var(--foreground)]">Ajouter des cryptomonnaies</h2>
+              <p className="text-[var(--foreground)]/60 mt-1">
                 {step === 'method' && 'Choisissez votre méthode d\'ajout'}
                 {step === 'crypto-select' && 'Sélectionnez la cryptomonnaie'}
                 {step === 'address-input' && `Entrez votre adresse ${selectedCrypto?.name}`}
@@ -234,7 +234,7 @@ export default function AddCryptoModal({ isOpen, onClose, onAssetAdded }: AddCry
           </div>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-white transition-colors p-2"
+            className="text-[var(--foreground)]/60 hover:text-[var(--foreground)] transition-colors p-2"
           >
             <X className="w-6 h-6" />
           </button>
@@ -247,26 +247,26 @@ export default function AddCryptoModal({ isOpen, onClose, onAssetAdded }: AddCry
               {/* Automatic Sync */}
               <button
                 onClick={() => handleMethodSelect('sync')}
-                className="group relative p-6 bg-gray-800/50 hover:bg-gray-800 rounded-xl transition-all duration-200 text-left border border-gray-700 hover:border-gray-600"
+                className="group relative p-6 bg-white/10 hover:bg-white/20 rounded-2xl transition-all duration-300 text-left border border-dashed border-[var(--foreground)]/20 hover:border-[var(--accent)]/40"
               >
-                <div className="w-16 h-16 rounded-xl bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-r from-[#4ECDC4] to-[#45B7D1] flex items-center justify-center mb-4 group-hover:scale-105 transition-transform shadow-lg">
                   <Shield className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-xl font-semibold text-white mb-2">Synchronisation automatique</h3>
-                <p className="text-gray-400 text-sm">Connexion sécurisée et mise à jour automatique de vos soldes</p>
-                <div className="mt-3 text-xs text-green-400">🔒 100% SÉCURISÉ</div>
+                <h3 className="text-xl font-semibold text-[var(--foreground)] mb-2">Synchronisation automatique</h3>
+                <p className="text-[var(--foreground)]/60 text-sm">Connexion sécurisée et mise à jour automatique de vos soldes</p>
+                <div className="mt-3 text-xs text-[var(--accent)] font-semibold">🔒 100% SÉCURISÉ</div>
               </button>
 
               {/* Manual Entry */}
               <button
                 onClick={() => handleMethodSelect('manual')}
-                className="group relative p-6 bg-gray-800/50 hover:bg-gray-800 rounded-xl transition-all duration-200 text-left border border-gray-700 hover:border-gray-600"
+                className="group relative p-6 bg-white/10 hover:bg-white/20 rounded-2xl transition-all duration-300 text-left border border-dashed border-[var(--foreground)]/20 hover:border-[var(--accent)]/40"
               >
-                <div className="w-16 h-16 rounded-xl bg-gradient-to-r from-orange-400 to-yellow-500 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-r from-[var(--accent)] to-[#FF6B35] flex items-center justify-center mb-4 group-hover:scale-105 transition-transform shadow-lg">
                   <Plus className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-xl font-semibold text-white mb-2">Ajout manuel</h3>
-                <p className="text-gray-400 text-sm">Ajoutez l'ensemble de vos comptes courants et livrets</p>
+                <h3 className="text-xl font-semibold text-[var(--foreground)] mb-2">Ajout manuel</h3>
+                <p className="text-[var(--foreground)]/60 text-sm">Ajoutez l'ensemble de vos comptes courants et livrets</p>
               </button>
             </div>
           )}
@@ -277,19 +277,19 @@ export default function AddCryptoModal({ isOpen, onClose, onAssetAdded }: AddCry
                 <button
                   key={crypto.symbol}
                   onClick={() => handleCryptoSelect(crypto)}
-                  className="w-full group relative p-4 bg-gray-800/50 hover:bg-gray-800 rounded-xl transition-all duration-200 text-left border border-gray-700 hover:border-gray-600 flex items-center gap-4"
+                  className="w-full group relative p-4 bg-white/10 hover:bg-white/20 rounded-2xl transition-all duration-300 text-left border border-dashed border-[var(--foreground)]/20 hover:border-[var(--accent)]/40 flex items-center gap-4"
                 >
-                  <div className={`w-12 h-12 rounded-full bg-gradient-to-r ${crypto.color} flex items-center justify-center`}>
+                  <div className={`w-12 h-12 rounded-full bg-gradient-to-r ${crypto.color} flex items-center justify-center shadow-lg`}>
                     <div className="text-white">
                       {crypto.icon}
                     </div>
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-white">{crypto.name}</h3>
-                    <p className="text-gray-400 text-sm">Format: {crypto.addressFormat}</p>
+                    <h3 className="text-lg font-semibold text-[var(--foreground)]">{crypto.name}</h3>
+                    <p className="text-[var(--foreground)]/60 text-sm">Format: {crypto.addressFormat}</p>
                   </div>
                   <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Plus className="w-5 h-5 text-gray-400" />
+                    <Plus className="w-5 h-5 text-[var(--accent)]" />
                   </div>
                 </button>
               ))}
@@ -298,20 +298,20 @@ export default function AddCryptoModal({ isOpen, onClose, onAssetAdded }: AddCry
 
           {step === 'address-input' && selectedCrypto && (
             <div className="space-y-6">
-              <div className="flex items-center gap-4 p-4 bg-gray-800/30 rounded-lg">
-                <div className={`w-12 h-12 rounded-full bg-gradient-to-r ${selectedCrypto.color} flex items-center justify-center`}>
+              <div className="flex items-center gap-4 p-4 bg-white/10 rounded-2xl border border-dashed border-[var(--foreground)]/20">
+                <div className={`w-12 h-12 rounded-full bg-gradient-to-r ${selectedCrypto.color} flex items-center justify-center shadow-lg`}>
                   <div className="text-white">
                     {selectedCrypto.icon}
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-white">{selectedCrypto.name}</h3>
-                  <p className="text-gray-400 text-sm">Format: {selectedCrypto.addressFormat}</p>
+                  <h3 className="text-lg font-semibold text-[var(--foreground)]">{selectedCrypto.name}</h3>
+                  <p className="text-[var(--foreground)]/60 text-sm">Format: {selectedCrypto.addressFormat}</p>
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-semibold text-[var(--foreground)]/80 mb-2">
                   Adresse {selectedCrypto.name}
                 </label>
                 <input
@@ -319,9 +319,9 @@ export default function AddCryptoModal({ isOpen, onClose, onAssetAdded }: AddCry
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                   placeholder={`Entrez votre adresse ${selectedCrypto.name}`}
-                  className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 bg-white/10 border border-dashed border-[var(--foreground)]/20 rounded-2xl text-[var(--foreground)] placeholder-[var(--foreground)]/40 focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent transition-all duration-300"
                 />
-                <p className="text-xs text-gray-400 mt-2">
+                <p className="text-xs text-[var(--foreground)]/60 mt-2">
                   Votre adresse sera utilisée pour synchroniser automatiquement votre solde
                 </p>
               </div>
@@ -329,14 +329,14 @@ export default function AddCryptoModal({ isOpen, onClose, onAssetAdded }: AddCry
               <div className="flex gap-3">
                 <button
                   onClick={handleBack}
-                  className="flex-1 py-3 px-4 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors"
+                  className="flex-1 py-3 px-4 bg-white/10 hover:bg-white/20 text-[var(--foreground)] rounded-2xl transition-all duration-300 border border-dashed border-[var(--foreground)]/20 font-semibold"
                 >
                   Retour
                 </button>
                 <button
                   onClick={handleAddressSubmit}
                   disabled={!address.trim() || loading}
-                  className="flex-1 py-3 px-4 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg transition-colors flex items-center justify-center gap-2"
+                  className="flex-1 py-3 px-4 bg-[var(--accent)] hover:bg-[var(--accent)]/90 disabled:bg-[var(--foreground)]/20 disabled:cursor-not-allowed text-white rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 font-semibold shadow-lg"
                 >
                   {loading ? (
                     <>

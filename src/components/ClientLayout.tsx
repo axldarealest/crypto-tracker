@@ -1,7 +1,7 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import GlobalHeader from "./GlobalHeader";
+import { GlobalHeader } from "./GlobalHeader";
 
 export default function ClientLayout({
   children,

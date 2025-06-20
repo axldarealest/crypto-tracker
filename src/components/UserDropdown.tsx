@@ -42,24 +42,24 @@ function UserDropdown() {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={toggleDropdown}
-        className="flex items-center gap-2 rounded-lg bg-gray-800/60 px-3 py-2 text-white hover:bg-gray-700/60 transition-colors backdrop-blur-sm"
+        className="flex items-center gap-2 rounded-lg bg-white/20 px-2 py-2 text-[var(--foreground)] hover:bg-white/30 transition-colors backdrop-blur-sm border border-dashed border-[var(--foreground)]/20 sm:px-3"
         aria-label="Menu utilisateur"
         aria-expanded={isOpen}
       >
-        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500/20">
-          <User className="h-4 w-4 text-green-400" />
+        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--accent)]/20 sm:h-8 sm:w-8">
+          <User className="h-3 w-3 text-[var(--accent)] sm:h-4 sm:w-4" />
         </div>
-        <span className="text-sm font-medium">{displayName}</span>
-        <ChevronDown className={`h-4 w-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        <span className="hidden text-sm font-semibold sm:block">{displayName}</span>
+        <ChevronDown className={`h-3 w-3 transition-transform sm:h-4 sm:w-4 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2 w-48 rounded-lg bg-gray-800 shadow-xl border border-gray-700 backdrop-blur-sm z-50">
+        <div className="absolute right-0 top-full mt-2 w-48 rounded-lg bg-white/20 shadow-sm border border-dashed border-[var(--foreground)]/20 backdrop-blur-sm z-50">
           <div className="p-2">
-            <div className="px-3 py-2 text-xs text-gray-400 border-b border-gray-700">
+            <div className="px-3 py-2 text-xs text-[var(--foreground)]/60 border-b border-dashed border-[var(--foreground)]/20">
               Connecté en tant que
             </div>
-            <div className="px-3 py-2 text-sm text-white truncate">
+            <div className="px-3 py-2 text-sm text-[var(--foreground)] font-semibold truncate">
               {session.user?.email}
             </div>
           </div>
@@ -67,7 +67,7 @@ function UserDropdown() {
           <div className="p-1">
             <Link 
               href="/profile"
-              className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+              className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-[var(--foreground)]/80 hover:bg-white/20 hover:text-[var(--foreground)] transition-colors"
               onClick={closeDropdown}
             >
               <Settings className="h-4 w-4" />
@@ -76,7 +76,7 @@ function UserDropdown() {
             
             <button
               onClick={handleLogout}
-              className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors"
+              className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-red-500 hover:bg-red-500/10 hover:text-red-600 transition-colors"
             >
               <LogOut className="h-4 w-4" />
               Se déconnecter
