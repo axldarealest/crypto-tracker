@@ -5,6 +5,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.0-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![NextAuth.js](https://img.shields.io/badge/NextAuth.js-5.0-purple?logo=auth0&logoColor=white)](https://next-auth.js.org/)
+[![Supabase](https://img.shields.io/badge/Supabase-2.0-green?logo=supabase&logoColor=white)](https://supabase.com/)
 
 > 💎 **Suivez vos investissements crypto en temps réel avec style !**
 
@@ -14,6 +15,7 @@ Une application web moderne et élégante pour tracker votre portfolio de crypto
 
 ### 🔐 **Authentification Sécurisée**
 - Connexion/Inscription avec NextAuth.js
+- Base de données Supabase (PostgreSQL)
 - Protection automatique des routes
 - Session persistante et sécurisée
 
@@ -76,12 +78,31 @@ AUTH_SECRET=your-auth-secret-here
 NEXTAUTH_URL=http://localhost:3000
 ```
 
-### 4. Lancer le serveur de développement
+### 4. Configuration Supabase (Nouveau !)
+```bash
+# Suivez les instructions dans SUPABASE_SETUP.md
+# Ou créez rapidement un fichier .env.local avec :
+NEXT_PUBLIC_SUPABASE_URL=votre_url_supabase
+NEXT_PUBLIC_SUPABASE_ANON_KEY=votre_cle_anon_supabase
+```
+
+### 5. Lancer le serveur de développement
 ```bash
 npm run dev
 ```
 
 🎉 **L'application est maintenant accessible sur [http://localhost:3000](http://localhost:3000)**
+
+## 🗄️ Base de Données
+
+L'application utilise maintenant **Supabase** (PostgreSQL serverless) au lieu de SQLite :
+
+- ✅ **Production-ready** - Fonctionne sur Vercel
+- ✅ **Scalable** - PostgreSQL avec Supabase
+- ✅ **Sécurisé** - Authentification et autorisation intégrées
+- ✅ **Temps réel** - Possibilité d'ajouter des fonctionnalités temps réel
+
+Voir [SUPABASE_SETUP.md](SUPABASE_SETUP.md) pour la configuration complète.
 
 ## 📱 Utilisation
 
