@@ -36,8 +36,8 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const BTC_ADDRESS = "bc1qyugzumqd6p37vlllmedh8pk534qhlrw3dmzu50";
-  const ETH_ADDRESS = "0x269ffaefb78F2F2B500BdE82398cBe578cc8dE17";
+  const BTC_ADDRESS = "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh"; // Adresse d'exemple
+  const ETH_ADDRESS = "0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6"; // Adresse d'exemple
 
   useEffect(() => {
     const fetchData = async () => {
