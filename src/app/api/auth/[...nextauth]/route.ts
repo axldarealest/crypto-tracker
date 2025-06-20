@@ -1,5 +1,6 @@
 import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
+import { verifyUser } from "@/lib/database"
 
 const authConfig = {
   secret: process.env.AUTH_SECRET,
@@ -11,36 +12,50 @@ const authConfig = {
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-        console.log("🔐 Attempting to authorize with:", credentials);
-
-        if (credentials?.email === "user@example.com" && credentials?.password === "password") {
-          console.log("✅ Authorization successful!");
-          return {
-            id: "1",
-            name: "Test User",
-            email: "user@example.com",
-          }
+        if (!credentials?.email || !credentials?.password) {
+          return null;
         }
-        
-        console.log("❌ Authorization failed.");
-        return null
+
+        try {
+          const user = await verifyUser({
+            email: credentials.email,
+            password: credentials.password
+          });
+
+          if (user) {
+            return {
+              id: user.id.toString(),
+              name: user.name,
+              email: user.email,
+            };
+          }
+
+          return null;
+        } catch (error) {
+          console.error("Auth error:", error);
+          return null;
+        }
       }
     })
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user }: { token: any; user: any }) {
       if (user) {
         token.id = user.id
       }
       return token
     },
-    async session({ session, token }) {
+    async session({ session, token }: { session: any; token: any }) {
       if (token) {
         session.user.id = token.id as string
       }
       return session
     },
   },
+  pages: {
+    signIn: '/signin',
+    signOut: '/',
+  }
 }
 
 const { handlers, auth, signIn, signOut } = NextAuth(authConfig)

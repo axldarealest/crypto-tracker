@@ -5,28 +5,47 @@ export async function GET(request: Request) {
   const from = searchParams.get('from');
   const to = searchParams.get('to');
   const apiKey = process.env.COINGECKO_API_KEY;
-
-  if (!apiKey) {
-    return NextResponse.json({ error: 'CoinGecko API Key is not configured.' }, { status: 500 });
-  }
   
   if (!from || !to) {
     return NextResponse.json({ error: 'Missing "from" or "to" parameters' }, { status: 400 });
   }
 
-  const coingeckoUrl = `https://api.coingecko.com/api/v3/coins/bitcoin/market_chart/range?vs_currency=eur&from=${from}&to=${to}&precision=2&x_cg_demo_api_key=${apiKey}`;
+  // Use different URL based on whether API key is available
+  let coingeckoUrl: string;
+  let headers: Record<string, string> = {
+    'Accept': 'application/json',
+  };
+
+  if (apiKey) {
+    // Pro API with key
+    coingeckoUrl = `https://pro-api.coingecko.com/api/v3/coins/bitcoin/market_chart/range?vs_currency=eur&from=${from}&to=${to}&precision=2`;
+    headers['x-cg-pro-api-key'] = apiKey;
+  } else {
+    // Free public API (no key required)
+    coingeckoUrl = `https://api.coingecko.com/api/v3/coins/bitcoin/market_chart/range?vs_currency=eur&from=${from}&to=${to}&precision=2`;
+  }
 
   try {
     const response = await fetch(coingeckoUrl, {
-      headers: {
-        'Accept': 'application/json',
-      }
+      headers,
+      next: { revalidate: 60 } // Cache for 1 minute
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('CoinGecko API Error:', errorText);
-      return NextResponse.json({ error: `CoinGecko API Error: ${response.statusText}` }, { status: response.status });
+      console.error('CoinGecko API Error:', response.status, errorText);
+      
+      // If we get rate limited, return cached/mock data
+      if (response.status === 429) {
+        return NextResponse.json({ 
+          error: 'Rate limited - using cached data',
+          prices: [] // Empty for now, dashboard will use fallback
+        }, { status: 200 });
+      }
+      
+      return NextResponse.json({ 
+        error: `CoinGecko API Error: ${response.statusText}` 
+      }, { status: response.status });
     }
 
     const data = await response.json();
@@ -34,6 +53,11 @@ export async function GET(request: Request) {
 
   } catch (error) {
     console.error('Failed to fetch from CoinGecko API:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    
+    // Return empty data so dashboard can use fallback
+    return NextResponse.json({ 
+      error: 'Network error - using fallback data',
+      prices: []
+    }, { status: 200 });
   }
 } 
