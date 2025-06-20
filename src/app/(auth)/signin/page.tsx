@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Wallet, Mail, Lock } from "lucide-react";
-import { signIn, SessionProvider } from "next-auth/react";
+import { signIn, SessionProvider, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
 
@@ -10,11 +10,17 @@ function SignInForm() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const { data: session, status } = useSession();
 
   useEffect(() => {
     console.log("🔵 SignInPage component mounted");
     console.log("🔵 signIn function available:", typeof signIn);
-  }, []);
+    
+    // Rediriger si déjà connecté
+    if (session) {
+      router.push("/dashboard");
+    }
+  }, [session, router]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

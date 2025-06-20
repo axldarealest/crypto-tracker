@@ -2,8 +2,20 @@
 
 import Link from "next/link";
 import { Wallet, Mail, Lock, User } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function SignUpPage() {
+  const { data: session } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    // Rediriger si déjà connecté
+    if (session) {
+      router.push("/dashboard");
+    }
+  }, [session, router]);
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gray-900 p-4">
       <div className="w-full max-w-md rounded-lg bg-gray-800/60 p-6 shadow-xl backdrop-blur-sm">
